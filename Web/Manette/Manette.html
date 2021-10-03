@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="FR">
+  <head>
+    <title>
+      La manette XBox 360
+    </title>
+    <meta http-equiv="content-type" content="text/html" charset="UTF-8">
+    <meta name="author" content="Alnotz">
+    <meta name="color-scheme" content="dark light">
+    <meta name="keywords" content="alnotz, gamepad, api, interaction">
+    <meta name="description" content="Une page HTML pour illustrer l'interaction avec une manette XBox 360. Conçue par Alnotz et sous GPL3+.">
+    <style>
+      /* Un peu de forme. */
+      html
+      {
+        background: #050505;
+        color: #D0F5D0;
+      }
+      h1
+      {
+        color: #F54040;
+      }
+      canvas#toile
+      {
+        width: 800px;
+        height: 600px;
+        margin: 1em 0 1em 0;
+        border: 3px solid green;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <!--Un peu de texte.-->
+    <h1>
+      La manette 
+      <em>
+        XBox 360
+      </em>
+    </h1>
+    <p>
+      On a  ci-dessous un schémas qui représente « en gros » une manette
+      <em>
+        XBox 360
+      </em>
+        qui indique les touches et leurs états respectifs : 
+      <em style="color: red;">
+        actif
+      </em>
+        ou 
+      <em style="color: blue;">
+        passif
+      </em>
+    </p>
+    <!--Le dessin interactif d'une manette.-->
+    <canvas id="toile" width="800" height="600">
+    </canvas>
+    <p>
+      Une création d'<strong>Alnotz</strong> sous <em>GPL3+</em>.
+      <a href="http://www.gnu.org/licenses/gpl-3.0.txt" title="Licence GPL3+ en texte brute">
+        <img src="http://www.gnu.org/graphics/gplv3-or-later.svg" alt="Logotype de GPL3+">
+      </a>
+    </p>
+    <noscript>
+      <p>
+        Sans le JavaScript, il n'y a pas grande chose à afficher vu que c'est la base de l'application. :-/
+      </p>
+    </noscript>
+  </body>
+  <script type="application/javascript">
+  /***************************************|
+  | Du code pour interagir entre la toile |
+  |  et les manettes de jeu.              |
+  |***************************************/
+  //<![CDATA[
+  console.log('Début');
+  var toile = document.getElementById('toile');
+  if (toile.getContext)
+  {
+    var ctx = toile.getContext('2d');
+    /* Support */
+    function drawPad()
+    {
+      ctx.fillStyle = "white";
+      ctx.beginPath();
+      ctx.moveTo(200,10);//En haut à gauche.
+      ctx.lineTo(300,10);
+      ctx.lineTo(320,100);//Creux à gauche.
+      ctx.lineTo(480,100);
+      ctx.lineTo(500,10);
+      ctx.lineTo(600,10);//En haut à droite.
+      ctx.lineTo(700,100);//Coude à droite.
+      ctx.lineTo(700,590);//Pied à droite
+      ctx.lineTo(600,590);
+      ctx.lineTo(480,300);
+      ctx.lineTo(320,300);
+      ctx.lineTo(200,590);//Pied à gauche.
+      ctx.lineTo(100,590); 
+      ctx.lineTo(100,100);
+      ctx.lineTo(200,10);
+      ctx.fill();
+    }
+    /* Positions */
+    let xBd = 200; let yBd = 260;//Bidirectionnel.
+    let xBt = 600; let yBt = 140;//Boutons.
+    /* Boutons */
+    
+    function drawLT(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.fillRect(280,10,20,50);//LT
+    }
+    function drawRT(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.fillRect(500,10,20,50);//RT
+    }
+    function drawLB(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.fillRect(220,70,80,20);//LB
+    }
+    function drawRB(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.fillRect(500,70,80,20);//RB
+    }
+    function drawBdH(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//Bidirectionnel.
+      ctx.moveTo(xBd,yBd);//Centre (haut).
+      ctx.lineTo(xBd-10,yBd-10);
+      ctx.lineTo(xBd-10,yBd-30);
+      ctx.lineTo(xBd+10,yBd-30);
+      ctx.lineTo(xBd+10,yBd-10);
+      ctx.lineTo(xBd,yBd);
+      ctx.fill();
+    }
+    function drawBdD(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//Bidirectionnel.
+      ctx.moveTo(xBd,yBd);//Centre (droite).
+      ctx.lineTo(xBd+10,yBd-10);
+      ctx.lineTo(xBd+30,yBd-10);
+      ctx.lineTo(xBd+30,yBd+10);
+      ctx.lineTo(xBd+10,yBd+10);
+      ctx.lineTo(xBd,yBd);
+      ctx.fill();
+    }
+    function drawBdB(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//Bidirectionnel.
+      ctx.moveTo(xBd,yBd);//Centre (bas).
+      ctx.lineTo(xBd+10,yBd+10);
+      ctx.lineTo(xBd+10,yBd+30);
+      ctx.lineTo(xBd-10,yBd+30);
+      ctx.lineTo(xBd-10,yBd+10);
+      ctx.lineTo(xBd,yBd);
+      ctx.fill();
+    }
+    function drawBdG(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//Bidirectionnel.
+      ctx.moveTo(xBd,yBd);//Centre (left).
+      ctx.lineTo(xBd-10,yBd+10);
+      ctx.lineTo(xBd-30,yBd+10);
+      ctx.lineTo(xBd-30,yBd-10);
+      ctx.lineTo(xBd-10,yBd-10);
+      ctx.lineTo(xBd,yBd);
+      ctx.fill();
+    }
+    function drawA(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//A
+      ctx.arc(xBt,yBt+20,10,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    function drawB(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//B
+      ctx.arc(xBt+20,yBt,10,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    function drawY(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//Y
+      ctx.arc(xBt,yBt-20,10,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    function drawX(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//X
+      ctx.arc(xBt-20,yBt,10,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    function drawJL(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//JoystickL
+      ctx.arc(200,140,30,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    function drawJR(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//JoystickR
+      ctx.arc(580,260,30,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    function drawXB(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//XBox
+      ctx.arc(400,220,30,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    function drawSt(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//Start
+      ctx.arc(340,220,10,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    function drawSe(flg)
+    {
+      if(flg)
+      {
+        ctx.fillStyle = "blue";
+      }
+      else
+      {
+        ctx.fillStyle = "red";
+      }
+      ctx.beginPath();//Select
+      ctx.arc(460,220,10,0,Math.PI*2,true);
+      ctx.fill();
+    }
+    /* Cadres des axes. */
+    function drawSubCanJL(x,y)//Cadre pour Joystik à gauche.
+    {
+      let xSCL = 300; let ySCL = 500;
+      ctx.clearRect(xSCL-5,ySCL-5,90,90);
+      ctx.beginPath();
+      ctx.strokeStyle = "red";//Cadre.
+      ctx.rect(xSCL,ySCL,80,80);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(xSCL+40+x*40,ySCL+35+y*40);//Curseur.
+      ctx.lineTo(xSCL+40+x*40,ySCL+45+y*40);
+      ctx.moveTo(xSCL+35+x*40,ySCL+40+y*40);
+      ctx.lineTo(xSCL+45+x*40,ySCL+40+y*40);
+      ctx.stroke();
+    }
+    function drawSubCanJR(x,y)//Cadre pour Joystik à droite.
+    {
+      let xSCR = 400; let ySCR = 500;
+      ctx.clearRect(xSCR-5,ySCR-5,90,90);
+      ctx.beginPath();
+      ctx.strokeStyle = "red";//Cadre.
+      ctx.rect(xSCR,ySCR,80,80);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(xSCR+40+x*40,ySCR+35+y*40);//Curseur.
+      ctx.lineTo(xSCR+40+x*40,ySCR+45+y*40);
+      ctx.moveTo(xSCR+35+x*40,ySCR+40+y*40);
+      ctx.lineTo(xSCR+45+x*40,ySCR+40+y*40);
+      ctx.stroke();
+    }
+    function drawSubCanLT(y)//Cadre pour Gâchette à gauche.
+    {
+      let xSCLT = 300; let ySCLT = 390;
+      ctx.clearRect(xSCLT-5,ySCLT-5,40,110);
+      ctx.beginPath();
+      ctx.strokeStyle = "red";//Cadre.
+      ctx.rect(xSCLT,ySCLT,30,100);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(xSCLT,ySCLT+y*50+50);
+      ctx.lineTo(xSCLT+30,ySCLT+y*50+50);
+      ctx.stroke();
+    }
+    function drawSubCanRT(y)//Cadre pour Gâchette à droite.
+    {
+      let xSCRT = 400; let ySCRT = 390;
+      ctx.clearRect(xSCRT-5,ySCRT-5,40,110);
+      ctx.beginPath();
+      ctx.strokeStyle = "red";//Cadre.
+      ctx.rect(xSCRT,ySCRT,30,100);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(xSCRT,ySCRT+y*50+50);
+      ctx.lineTo(xSCRT+30,ySCRT+y*50+50);
+      ctx.stroke();
+    }
+    /* Dessin initial. */
+    drawPad(true);
+    drawLT(true);
+    drawRT(true);
+    drawLB(true);
+    drawRB(true);
+    drawBdH(true);
+    drawBdD(true);
+    drawBdB(true);
+    drawBdG(true);
+    drawA(true);
+    drawB(true);
+    drawX(true);
+    drawY(true);
+    drawJL(true);
+    drawJR(true);
+    drawXB(true);
+    drawSt(true);
+    drawSe(true);
+    drawSubCanJL(0.0,0.0);
+    drawSubCanJR(0.0,0.0);
+    drawSubCanLT(0.0);
+    drawSubCanRT(0.0);
+    /* Écoute des touches */
+    function testButtons(gpad)
+    {
+      console.log("Début des essais.");
+      let bLen = gpad.buttons.length;
+      /* Exament des états et affichage... */
+      function reDraw()
+      {
+        //console.log("Test");
+        drawA(!gpad.buttons[0].pressed);
+        drawB(!gpad.buttons[1].pressed);
+        drawX(!gpad.buttons[2].pressed);
+        drawY(!gpad.buttons[3].pressed);
+        drawLB(!gpad.buttons[4].pressed);
+        drawRB(!gpad.buttons[5].pressed);
+        drawSe(!gpad.buttons[6].pressed);
+        drawSt(!gpad.buttons[7].pressed);
+        drawXB(!gpad.buttons[8].pressed);
+        drawJL(!gpad.buttons[9].pressed);
+        drawJR(!gpad.buttons[10].pressed);
+        drawBdH(!(gpad.axes[7] === -1));
+        drawBdD(!(gpad.axes[6] ===  1));
+        drawBdB(!(gpad.axes[7] ===  1));
+        drawBdG(!(gpad.axes[6] === -1));
+        drawSubCanJL(gpad.axes[0],gpad.axes[1]);
+        drawSubCanJR(gpad.axes[3],gpad.axes[4]);
+        drawSubCanLT(gpad.axes[2]);
+        drawSubCanRT(gpad.axes[5]);
+      }
+      /* ...en temps réel. */
+      let boucle = setInterval(reDraw, 200);
+    }
+    /* Écouteurs de manette. */
+    function connection(e)
+    {
+      console.warn("Contrôleur n°%d connecté : %s. %d boutons, %d axes.",
+      e.gamepad.index, e.gamepad.id,
+      e.gamepad.buttons.length, e.gamepad.axes.length);
+      testButtons(e.gamepad);
+    }
+    function deconnection(e)
+    {
+      console.warn("Contrôleur n°%d déconnecté : %s",
+      e.gamepad.index, e.gamepad.id);
+    }
+    function scanLog()
+    {
+      console.log("Chargé!");
+      window.addEventListener("gamepadconnected", connection);
+      window.addEventListener("gamepaddisconnected", deconnection);
+    }
+    window.addEventListener("load", scanLog);
+  }
+  else
+  {
+    //Au cas où canvas ne serait pas supporté.
+    console.alarm('Élément Canvas non supporté.');
+  }
+  console.log('Fin');
+  //]]>
+  </script>
+</html>

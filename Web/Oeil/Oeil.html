@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="FR">
+  <head>
+    <title>
+      Celui qui voit.
+    </title>
+    <meta http-equiv="content-type" content="text/html" charset="UTF-8">
+    <meta name="author" content="Alnotz">
+    <meta name="color-scheme" content="dark light">
+    <meta name="keywords" content="alnotz, oeil, api, interaction, curseur">
+    <meta name="description" content="Une page HTML pour illustrer l'interaction avec une sourie. Conçue par Alnotz et sous GPL3+.">
+    <style>
+      /* Un peu de forme. */
+      html
+      {
+        background: #050505;
+        color: #D0F5D0;
+      }
+      h1
+      {
+        color: #F54040;
+      }
+      p
+      {
+        width: 800px;
+      }
+      p#alerte
+      {
+        color: orange;
+        font-size: 2em;
+      }
+      /* Ne pas oublier les dimensions de la toile! */
+      canvas#toile
+      {
+        width: 800px;
+        height: 600px;
+        margin: 1em 0 1em 0;
+        border: 3px solid red;
+        border-radius: 3px;
+        cursor: default;
+      }
+    </style>
+  </head>
+  <body>
+    <!--Un peu de texte.-->
+    <h1>
+      L'&#338;il qui traque
+    </h1>
+    <!-- Texte interactif-->
+    <p>
+      On a ci-dessous un schéma qui représente un &#339;il traquant un curseur.
+      Un premier clic active la traque et peut être annulé par un second clic.
+      Les coordonnées sont 
+      <em id="X">
+        X
+      </em>
+      et 
+      <em id="Y">
+        Y
+      </em>.
+    </p>
+    <p id="alerte">
+      <br>
+    </p>
+    <!--Le dessin interactif d'un œil.-->
+    <canvas id="toile" width="800" height="600">
+    </canvas>
+    <p>
+      Une création d'<strong>Alnotz</strong> sous <em>GPL3+</em>.
+      <a href="http://www.gnu.org/licenses/gpl-3.0.txt" title="Licence GPL3+ en texte brute">
+        <img src="http://www.gnu.org/graphics/gplv3-or-later.svg" alt="Logotype de GPL3+">
+      </a>
+    </p>
+    <!--Pas d'accès JS-->
+    <noscript>
+      <p>
+        Sans le JavaScript, il n'y a pas grande chose à afficher vu que c'est la base de l'application. :-/
+      </p>
+    </noscript>
+  </body>
+  <!--Code interactif-->
+  <script type="application/javascript">
+    /***************************************|
+    | Du code pour interagir entre l'œil et |
+    |  le pointeur de la sourie.            |
+    |***************************************/
+    //Astuce XML pour éviter des conflicts avec les balises à la ligne qui suit.
+    //<![CDATA[
+    console.log('Début');
+    var boucle;//ID de boucle.
+    var drapeau = false;//Interrupteur de boucle.
+    var toile = document.getElementById("toile");//Toile à dessin.
+    var ctx = toile.getContext('2d');
+    var oeilX = 400;
+    var oeilY = 300;
+    /* Fonctions. */
+    function dessinInit()//Dessin de départ.
+    {
+      ctx.beginPath();//Blanc de l'œil.
+      ctx.fillStyle ="white";
+      ctx.arc(oeilX,oeilY,100,0,Math.PI*2,true);
+      ctx.fill();
+      ctx.beginPath();//Iris de l'œil.
+      ctx.fillStyle = "#4040D0";
+      ctx.arc(oeilX,oeilY,50,0,Math.PI*2,true);
+      ctx.fill();
+      ctx.beginPath();//Rétine de l'œil.
+      ctx.fillStyle = "black";
+      ctx.arc(oeilX,oeilY,20,0,Math.PI*2,true);
+      ctx.fill();
+      ctx.beginPath();//Paupière supérieure.
+      ctx.fillStyle = "#A040A0";
+      ctx.moveTo(oeilX-102,oeilY-102);
+      ctx.lineTo(oeilX+102,oeilY-102);
+      ctx.arc(oeilX,oeilY+52,102,0,Math.PI,true);
+      ctx.lineTo(oeilX-102,oeilY-102);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();//Paupière inférieure.
+      ctx.moveTo(oeilX+102,oeilY+102);
+      ctx.lineTo(oeilX-102,oeilY+102);
+      ctx.arc(oeilX,oeilY-52,102,Math.PI,Math.PI*2,true);
+      ctx.lineTo(oeilX+102,oeilY+102);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();//Contour restreignant le dessin de l'œil.
+      ctx.fillStyle = "rgba(0, 0, 0, 1)";
+      ctx.arc(oeilX,oeilY,101,0,Math.PI*2,true);
+      ctx.arc(oeilX,oeilY,221,0,Math.PI*2,false);
+      ctx.moveTo(oeilX+101,oeilY);
+      ctx.closePath();
+      ctx.fill();
+    }
+    function dessinDyna(mvX, mvY)//Dessin dynamique.
+    {
+      let diffY = 0;//Écart vertical.
+      ctx.clearRect(0,0,800,600);
+      ctx.beginPath();//Blanc de l'œil.
+      ctx.fillStyle ="white";
+      ctx.arc(oeilX,oeilY,100,0,Math.PI*2,true);
+      ctx.fill();
+      ctx.beginPath();//Iris de l'œil.
+      ctx.fillStyle = "#4040D0";
+      ctx.arc(oeilX+mvX, oeilY+mvY,50,0,Math.PI*2,true);
+      ctx.fill();
+      ctx.beginPath();//Rétine de l'œil.
+      ctx.fillStyle = "black";
+      ctx.arc(oeilX+mvX, oeilY+mvY,20,0,Math.PI*2,true);
+      ctx.fill();
+      /* La paupière supérieure se lève quand la rétine
+      *  monte assez haut. De même, celle inférieure
+      * baisse si la rétine est assez basse.
+      */
+      if(mvY >= -10)//L'iris ne touche pas la paupière.
+      {
+        diffY = 0;
+      }
+      else//La paupière levée avec l'iris.
+      {
+        diffY = mvY+10;
+      }
+      ctx.beginPath();//Paupière supérieure.
+      ctx.fillStyle = "#A040A0";
+      ctx.moveTo(oeilX-102,oeilY-102+diffY);
+      ctx.lineTo(oeilX+102,oeilY-102+diffY);
+      ctx.arc(oeilX,oeilY+52+diffY,102,0,Math.PI,true);
+      ctx.lineTo(oeilX-102,oeilY-102+diffY);
+      ctx.closePath();
+      ctx.fill();
+      if(mvY <=  10)//L'iris ne touche pas la paupière.
+      {
+        diffY = 0;
+      }
+      else//La paupière baissée avec l'iris.
+      {
+        diffY = mvY-10;
+      }
+      ctx.beginPath();//Paupière inférieure.
+      ctx.moveTo(oeilX+102,oeilY+102+diffY);
+      ctx.lineTo(oeilX-102,oeilY+102+diffY);
+      ctx.arc(oeilX,oeilY-52+diffY,102,Math.PI,Math.PI*2,true);
+      ctx.lineTo(oeilX+102,oeilY+102+diffY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();//Contour restreignant le dessin de l'œil.
+      ctx.fillStyle = "rgba(0, 0, 0, 1)";
+      ctx.arc(oeilX,oeilY,101,0,Math.PI*2,true);
+      ctx.arc(oeilX,oeilY,221,0,Math.PI*2,false);
+      ctx.moveTo(oeilX+101,oeilY);
+      ctx.closePath();
+      ctx.fill();
+    }
+    function dessinCurseur(trace)//Dessin du curseur cible.
+    {
+      ctx.beginPath();//Curseur cible.
+      ctx.strokeStyle = "red";
+      ctx.moveTo(trace.offsetX-10,trace.offsetY);
+      ctx.lineTo(trace.offsetX+10,trace.offsetY);
+      ctx.moveTo(trace.offsetX,trace.offsetY-10);
+      ctx.lineTo(trace.offsetX,trace.offsetY+10);
+      ctx.closePath();
+      ctx.stroke();
+    }
+    function suivre(trace)//Coordonnées en temps réel.
+    {
+      if(drapeau)//Valeurs à jour.
+      {
+        document.getElementById("X").innerHTML = `${trace.offsetX} px`;
+        document.getElementById("Y").innerHTML = `${trace.offsetY} px`;
+        /* La position de la rétine et de l'iris varie dans l'œil
+        *  proportionnellement à la position du curseur dans la toile.
+        */
+        dessinDyna((trace.offsetX-400)/4, (trace.offsetY-300)/3);
+        dessinCurseur(trace);//Curseur ajouté à part.
+      }
+      else//Valeurs indéfinies.
+      {
+        document.getElementById("X").innerHTML = "X";
+        document.getElementById("Y").innerHTML = "Y";
+      }
+    }
+    function autoriser(coups)//Interrupteur de traçage.
+    {
+      if(drapeau)
+      {
+        document.getElementById("alerte").innerHTML = "<br>";
+        toile.style.cursor = "default"
+        toile.removeEventListener("mousemove", suivre);
+        //console.log("Ignore");
+      }
+      else
+      {
+        document.getElementById("alerte").innerHTML = "Attention, il observe!";
+        toile.style.cursor = "none"
+        toile.addEventListener("mousemove", suivre);
+        //console.log("Écoute");
+      }
+      drapeau = !drapeau;
+    }
+    /* Actions. */
+    dessinInit();
+    toile.addEventListener("click", autoriser);
+    console.log('Fin');
+    //Fin d'encadrement XML anti-conflict.
+    //]]>
+  </script>
+</html>

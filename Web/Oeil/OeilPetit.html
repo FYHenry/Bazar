@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="FR">
+  <head>
+    <meta http-equiv="content-type" content="text/html" charset="UTF-8">
+    <style>
+      /* Un peu de forme. */
+      html
+      {
+        background: #050505;
+        color: #D0F5D0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Texte interactif-->
+    <p>
+      Les coordonnées sont <em id="X">X</em> et <em id="Y">Y</em>.
+    </p>
+  </body>
+  <script type="application/javascript">
+  //<![CDATA[
+  console.log('Début');
+  var boucle;//ID de boucle.
+  var drapeau = false;//Interrupteur de boucle.
+  function suivre(trace)
+  {
+    if(drapeau)
+    {
+      document.getElementById("X").innerHTML = trace.offsetX;
+      document.getElementById("Y").innerHTML = trace.offsetY;
+    }
+    else
+    {
+      document.getElementById("X").innerHTML = "X";
+      document.getElementById("Y").innerHTML = "Y";
+    }
+  }
+  function autoriser(coups)
+  {
+    drapeau = !drapeau;
+  }
+  
+  window.addEventListener("click", autoriser);
+  window.addEventListener("mousemove", suivre);
+  console.log('Fin');
+  //]]>
+  </script>
+</html>
