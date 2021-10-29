@@ -29,7 +29,6 @@ ALTSH=('&#x00b6;' '&#x201e;' '&#x201c;' '&#x201d;' '&#x2264;' '&#x2265;' '&#x201
 ########################################################
 echo '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg 
-  xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:svg="http://www.w3.org/2000/svg" 
   xmlns="http://www.w3.org/2000/svg" 
   width="1680" 
@@ -39,49 +38,111 @@ echo '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
   <title>Disposition BÉPO</title>
   <desc>Personalisation du clavier BÉPO avec la norme ISO/IEC 9995-7.</desc>
   <style>
-    /*Style d’ensemble*/
-    svg
+    @media (prefers-color-scheme: light)
     {
-      background: #e1e1e1;
-      color: #908f90;
+      /*Style d’ensemble*/
+      svg
+      {
+        background: #e1e1e1;
+        color: #908f90;
+      }
+      /*Style de touche*/
+      rect
+      {
+        fill: #fffcf7;
+        stroke: #a09fa0;
+      }
+      /*Styles des caractères*/
+      text
+      {
+        font-family: monospace;
+        font-size: 40px;
+      }
+      text.base
+      {
+        fill: purple;
+      }
+      text.shift
+      {
+        fill: blue;
+      }
+      text.alt
+      {
+        fill: green;
+      }
+      text.combo
+      {
+        fill: orange;
+      }
+      text.dead
+      {
+        font-weight: bold;
+      }
+      image#cc_circle
+      {
+        height: 22px!important;
+        margin-left: 3px;
+        vertical-align: text-bottom;
+      }
+      image#cc_by
+      {
+        height: 22px!important;
+        margin-left: 3px;
+        vertical-align: text-bottom;
+      }
     }
-    /*Styles des caractères*/
-    text
+    @media (prefers-color-scheme: dark)
     {
-      font-family: monospace;
-      font-size: 40px;
-    }
-    text.base
-    {
-      fill: purple;
-    }
-    text.shift
-    {
-      fill: blue;
-    }
-    text.alt
-    {
-      fill: green;
-    }
-    text.combo
-    {
-      fill: orange;
-    }
-    text.dead
-    {
-      font-weight: bold;
-    }
-    image#cc_circle
-    {
-      height: 22px!important;
-      margin-left: 3px;
-      vertical-align: text-bottom;
-    }
-    image#cc_zero
-    {
-      height: 22px!important;
-      margin-left: 3px;
-      vertical-align: text-bottom;
+      /*Style d’ensemble*/
+      svg
+      {
+        background: #908f90;
+        color: #e1e1e1;
+      }
+      /*Style de touche*/
+      rect
+      {
+        fill: #a09fa0;
+        stroke: #fffcf7;
+      }
+      /*Styles des caractères*/
+      text
+      {
+        font-family: monospace;
+        font-size: 40px;
+      }
+      text.base
+      {
+        fill: purple;
+      }
+      text.shift
+      {
+        fill: blue;
+      }
+      text.alt
+      {
+        fill: green;
+      }
+      text.combo
+      {
+        fill: orange;
+      }
+      text.dead
+      {
+        font-weight: bold;
+      }
+      image#cc_circle
+      {
+        height: 22px!important;
+        margin-left: 3px;
+        vertical-align: text-bottom;
+      }
+      image#cc_by
+      {
+        height: 22px!important;
+        margin-left: 3px;
+        vertical-align: text-bottom;
+      }
     }
   </style>''' > $DEST
 ########################################################
@@ -96,7 +157,7 @@ do
   do
     KX=$((10+$KC*120))
     echo '  <g id="keyl'$KL'c'$KC'" transform="translate('$KX' '$KY')">' >> $DEST
-    echo '    <rect x="0" y="0" width="100" height="100" fill="#fffcf7" stroke="#a09fa0" rx="10"/>' >> $DEST
+    echo '    <rect x="0" y="0" width="100" height="100" rx="10"/>' >> $DEST
     echo '    <text class="base" x="10" y="90">'${BASE[$(($KC+14*$KL))]}'</text>' >> $DEST
     echo '    <text class="shift" x="10" y="45">'${SHIFT[$(($KC+14*$KL))]}'</text>' >> $DEST
     echo '    <text class="alt" x="50" y="90">'${ALTER[$(($KC+14*$KL))]}'</text>' >> $DEST
@@ -111,7 +172,7 @@ for KC in {0..2}
 do
   KX=$((10+$KC*120))
   echo '  <g id="keyl'$KL'c'$KC'" transform="translate('$KX' '$KY')">' >> $DEST
-  echo '    <rect x="0" y="0" width="100" height="100" fill="#fffcf7" stroke="#a09fa0" rx="10"/>' >> $DEST
+  echo '    <rect x="0" y="0" width="100" height="100" rx="10"/>' >> $DEST
   echo '    <text class="base" x="10" y="90">'${HBASE[$(($KC))]}'</text>' >> $DEST
   echo '    <text class="shift" x="10" y="45"></text>' >> $DEST
   echo '    <text class="alt" x="50" y="90"></text>' >> $DEST
@@ -122,7 +183,7 @@ for KC in {10..13}
 do
   KX=$((10+$KC*120))
   echo '  <g id="keyl'$KL'c'$KC'" transform="translate('$KX' '$KY')">' >> $DEST
-  echo '    <rect x="0" y="0" width="100" height="100" fill="#fffcf7" stroke="#a09fa0" rx="10"/>' >> $DEST
+  echo '    <rect x="0" y="0" width="100" height="100" rx="10"/>' >> $DEST
   echo '    <text class="base" x="10" y="90">'${HBASE[$(($KC-7))]}'</text>' >> $DEST
   echo '    <text class="shift" x="10" y="45"></text>' >> $DEST
   echo '    <text class="alt" x="50" y="90"></text>' >> $DEST
@@ -133,7 +194,7 @@ done
 KC=3
 KX=$((10+$KC*120))
 echo '  <g id="keyl'$KL'c'$KC'" transform="translate('$KX' '$KY')">' >> $DEST
-echo '    <rect x="0" y="0" width="820" height="100" fill="#fffcf7" stroke="#a09fa0" rx="10"/>' >> $DEST
+echo '    <rect x="0" y="0" width="820" height="100" rx="10"/>' >> $DEST
 echo '    <text class="base" x="10" y="80">&#x2423;</text>' >> $DEST
 echo '    <text class="shift" x="10" y="35">&#x2336;</text>' >> $DEST
 echo '    <text class="alt" x="770" y="80">_</text>' >> $DEST
@@ -145,7 +206,7 @@ KY=$((10+$KL*120))
 KC=13
 KX=$((10+$KC*120))
 echo '  <g id="keyl'$KL'c'$KC'" transform="translate('$KX' '$KY')">' >> $DEST
-echo '    <rect x="0" y="0" width="100" height="220" fill="#fffcf7" stroke="#a09fa0" rx="10"/>' >> $DEST
+echo '    <rect x="0" y="0" width="100" height="220" rx="10"/>' >> $DEST
 echo '    <text class="base" x="10" y="190">&#9094;</text>' >> $DEST
 echo '    <text class="shift" x="10" y="45">&#9166;</text>' >> $DEST
 echo '    <text class="alt" x="50" y="190"></text>' >> $DEST
@@ -157,7 +218,7 @@ KY=$((10+$KL*120))
 KC=12
 KX=$((10+$KC*120))
 echo '  <g id="keyl'$KL'c'$KC'" transform="translate('$KX' '$KY')">' >> $DEST
-echo '    <rect x="0" y="0" width="220" height="100" fill="#fffcf7" stroke="#a09fa0" rx="10"/>' >> $DEST
+echo '    <rect x="0" y="0" width="220" height="100" rx="10"/>' >> $DEST
 echo '    <text class="base" x="10" y="90">&#8679;</text>' >> $DEST
 echo '    <text class="shift" x="10" y="45"></text>' >> $DEST
 echo '    <text class="alt" x="150" y="90"></text>' >> $DEST
@@ -170,7 +231,7 @@ echo '''  <g xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.or
     </text>
     <a href="https://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">
       <image x="48em" y="-1em" id="cc_circle" href="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"/>
-      <image x="calc(48em + 22px)" y="-1em" id="cc_zero" href="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"/>
+      <image x="calc(48em + 22px)" y="-1em" id="cc_by" href="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"/>
     </a>
   </g>''' >> $DEST
 echo '</svg>' >> $DEST
