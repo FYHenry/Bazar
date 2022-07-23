@@ -6,17 +6,17 @@ then
 elif [[ $1 == '-c' ]]
 then
   shift 1
-  if ! [ -w '$2' ] #Si le fichier n'existe pas ou ne peut pas être écrit
+  if ! [ -w "$2" ] #Si le fichier n'existe pas ou ne peut pas être écrit
   then
-    touch ./$2 #Répertoire cible.
+    touch ./"$2" #Répertoire cible.
     echo -e "$2 créé."
   fi
   NBR=0
   for FICHIER in $1
   do
     echo -e "n°$NBR : $FICHIER" #Fichiers EML à concaténer.
-    echo -e "From - $(LANG='en_US' date +'%a %b %d %H:%M:%S %Y')" >> ./$2 # Date.
-    cat "$FICHIER" >> ./$2 #Concaténation du fichier.
+    echo -e "From - $(LANG='en_US' date +'%a %b %d %H:%M:%S %Y')" >> ./"$2" # Date.
+    cat "$FICHIER" >> ./"$2" #Concaténation du fichier.
     echo -e "$FICHIER => $2"
     NBR=$((NBR + 1))
   done
