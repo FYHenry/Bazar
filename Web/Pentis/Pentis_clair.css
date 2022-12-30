@@ -1,0 +1,32 @@
+/* Style clair. */
+body
+{
+  background: white;
+  color: black;
+}
+/* Toile où dessiner les pentominos. */
+canvas#toile
+{
+  border: 2px solid red;
+  width: 600px;
+  height: 800px;
+  margin: 1em;
+}
+/* Texte où faire apparaître la grille. */
+a#ici
+{
+  text-decoration: none;
+}
+a#ici:hover
+{
+  text-decoration: underline;
+}
+/* Grille effective. */
+div#grille
+{
+  width: 50%;
+  height: auto;
+  border: 2px dotted yellow;
+  line-height:0.8em;
+  display: none;
+}

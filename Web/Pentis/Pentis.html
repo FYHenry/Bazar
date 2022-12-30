@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!--Il faut lancer main.js par NodeJS-->
+<!--Adresse: http://127.0.0.1:1337/Pentis.html-->
+<html lang="fr-FR, fr">
+  <head>
+    <title>
+      Pentis
+    </title>
+    <meta charset="utf-8">
+    <meta name="author" content="Alnotz">
+    <meta name="color-scheme" content="dark light">
+    <meta name="keywords" content="alnotz, Pentis, canvas, interaction">
+    <meta name="description" content="Une page HTML dédiée au mini-jeu Pentis. Conçue par Alnotz et sous GPL3+.">
+    <link rel="stylesheet" title="dark" href="http://localhost:1337/Pentis_sombre.css" type="text/css" media="screen">
+    <link rel="canonical" href="http://localhost:1337/Pentis.html">
+    <link rel="alternate stylesheet" title="light" href="http://localhost:1337/Pentis_clair.css" type="text/css" media="screen">
+    <link rel="icon" href="http://localhost:1337/Pentis_icone.svg" type="image/png">
+  </head>
+  <body>
+    <h1>
+      Pentis
+    </h1>
+    <p>
+      Intéressé par les pentominos ?
+    </p>
+    <canvas id="toile" width="600" height="800">
+      Si ça ne peut pas marcher avec la
+      <em>
+        Canvas API
+      </em>
+      , on tentera autre chose.
+    </canvas>
+  <p>
+    Envie de voir derrière la scène ? Cliquer
+    <a id="ici" href="#">ici</a>
+    &#x20;
+    <span id="iciTexte">
+      affichera la grille
+    </span>.
+  </p>
+    <div id="grille">
+      <code id="tableau">
+        <pre>
+        </pre>
+      </code>
+    </div>
+    <noscript>
+      <p>
+        Sans le JavaScript, il n'y a pas grande chose à afficher vu que c'est la base de l'application. :-/
+      </p>
+    </noscript>
+  </body>
+  <script src="http://localhost:1337/Pentis.js" type="application/javascript">
+  </script>
+</html>
