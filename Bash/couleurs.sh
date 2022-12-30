@@ -20,9 +20,9 @@
 # ITALIQUE=3
 # SOUSLIGNE=4
 # CLIGNOTANT=5
-# INVERSE=7
-# INVISIBLE=8
-# BARRE=9
+# INVERSE=6
+# INVISIBLE=7
+# BARRE=8
 # Case à tester : case $BIDULE in 0) MOT=0 ;; 1) MOT=1 ;; 2) MOT=2 ;; 3) MOT=3 ;; *) MOT=rien ;; esac ; echo $MOT ;
 
 # On veut intégrer 3 options :
@@ -140,9 +140,9 @@ function hlp()
   echo "    3- italique"
   echo "    4- souligne"
   echo "    5- clignotant"
-  echo "    7- inverse"
-  echo "    8- invisible"
-  echo "    9- barre"
+  echo "    6- inverse"
+  echo "    7- invisible"
+  echo "    8- barre"
   echo
   echo "Script fait avec amour. ;-)"
 }
