@@ -1,0 +1,784 @@
+.\" Edited by Alnotz.
+.\" 2023-04-02
+
+.TH "STEAM" "6" "2023-04-02" "Valve" "Steam Launcher's Manual"
+
+.SH "NAME"
+
+steam \- A launcher for the Steam client from Valve Corporation
+
+.SH "SYNOPSIS"
+
+.B steam
+[
+.I STEAM_ARG
+[
+.I STEAM_ARG
+…]] [
+.I STEAM_URL
+]
+
+.SH "DESCRIPTION"
+
+.PP
+.B Steam
+is a software distribution service focused on games, automatic updates,
+achievements, and social features for gamers.
+.PP
+It launches the Steam application with optional arguments to control
+more the starting stage.\&
+The Steam Browser Protocol enables the internal URLs
+.I STEAM_URL
+when the scheme is
+.I steam://\fR.
+.PP
+Steam is launched with the last user profil or the default profil without
+arguments.
+
+.SH "OPTIONS"
+
+.SS "Command Line Options"
+
+.PP
+A lot of UNIX-style arguments
+.I STEAM_ARG
+can follow.\&
+See below.
+
+.TP
+.B "\-applaunch \fIAPP_ID\fP [ \fIAPP_ARG\fP …]"
+
+Launches an Game or Application
+.I APP_ID
+through Steam with its optional arguments
+.I APP_ARG
+(see [3]).
+
+.TP
+.B \-cafeapplaunch
+
+Launches the applications in a cybercafe context (Forces applications to
+be verified or validated before launch).
+
+.TP
+.B \-clearbeta
+
+Options out of beta participation (in case for some reason it can't be
+done via settings).
+
+.TP
+.B \-complete_install_via_http
+
+Run installation completion over HTTP by default.
+
+.TP
+.B \-console
+
+Enables the Steam debug console tab.
+
+.TP
+.B \-ccsyntax
+
+Spew details about the localized strings we load.
+
+.TP
+.B \-debug_steamapi
+
+Enables logging of Steam API functions.
+
+.TP
+.B \-dev
+
+Sets the 
+.I developer
+variable to
+.I 1\fR.
+Can be used to open the VGUI editor by pressing [F6] or VGUI zoo by
+pressing [F7].\&
+Intended for skin development, it also enables the debug console tab.
+
+.TP
+.B \-fs_log
+
+Log file system accesses.
+
+.TP
+.B \-fs_target
+
+Set target syntax.
+
+.TP
+.B \-fs_logbins
+
+Log the binaries loaded during operation.
+
+.TP
+.B \-forceservice
+
+Run Steam Client Service even if Steam has admin rights.
+
+.TP
+.B \-gameoverlayinject
+
+Sets the method how GameOverlay is injected.
+
+.TP
+.B "\-install \fIDIR_PATH\fP"
+
+Install a product from a specified path
+.I DIR_PATH
+(
+.I /media/cdrom0
+for the DVD-ROM drive if it is one).
+
+.TP
+.B \-installer_test
+
+Changes installing a retail game to emit all files to
+.I install_validate/
+folder instead of to the Steam cache.
+
+.TP
+.B \-language \fISTEAM_LANG\fP
+
+Sets the Steam language to the one specified.\&
+For examples:
+.B english
+,
+.B german
+).
+
+.TP
+.B \-login
+[
+.I USERNAME
+|
+.B anonymous
+] [
+.I PASSWORD
+]
+
+Logs into Steam with the specified username
+.I USERNAME
+and password
+.I PASSWORD
+combination.\&
+Steam must be off for this to work.\&
+.B anonymous
+is a special username for anonymous user.
+
+.TP
+.B \-lognetapi
+
+Logs all P2P networking info to
+.I log/netapi_log.txt\fR.
+
+.TP
+.B \-log_voice
+
+Writes voice chat data to the
+.I logs/voice_log.txt
+file.
+
+.TP
+.B \-noasync
+
+Don't use async file operations, run them synchronous instead.
+
+.TP
+.B \-nocache
+
+Starts steam with no cache.
+Steam must be off for this to work properly!
+
+.TP
+.B \-nofriendsui
+
+Prevents the friends list window from showing automatically upon start.
+
+.TP
+.B \-noverifyfiles
+
+Prevents from the client from checking files integrity, especially useful
+when testing localization.
+
+.TP
+.B \-no-browser
+
+Steam's description for this parameter says it "unconditionally disables
+CEF".\&
+CEF stands for Chromium Embedded Framework, which Steam uses for its
+built-in web browser components (including the in-game overlay browser),
+and also for WebViews used by the new Panorama-based friends/chat UI,
+and Library.\&
+Using this option will (among other things) disable the new Library UI,
+and restore the old friends list and chat UI. However, it won't restore
+the old Library UI.
+
+.TP
+.B \-no-dwrite
+
+Forces vgui to use GDI text even if DWrite support is available.
+
+.TP
+.B \-oldbigpicture
+
+Restores old big picture mode, will be removed eventually but allows
+access for compatibility reasons for now.
+
+.TP
+.B -script \fIFILE_PATH\fP
+
+Runs a Steam script
+.I FILE_PATH\fR.
+All scripts must be in a subdirectory of the Steam folder called test
+scripts.\&
+Steam must be off for this to work!
+
+.TP
+.B \-shutdown
+
+Shuts down (exits) Steam.
+
+.TP
+.B \-silent
+
+Suppresses the dialog box that opens when you start steam.\&
+It is used when you have Steam set to auto-start when your computer turns
+on.\&
+Steam must be off for this to work!
+
+.TP
+.B \-single_core
+
+Force Steam to run on your primary CPU only.
+
+.TP
+.B \-tcp
+
+Forces connection to Steam backend to be via TCP.
+
+.TP
+.B \-voice_quality
+
+Sets audio quality, range [1,3].
+
+.TP
+.B \-voicerelay
+
+Only allow 'relay' connections for voice (testing).
+
+.TP
+.B \-tenfoot
+
+Start Steam in Big Picture Mode.
+
+.TP
+.B \-gamepadui
+
+Enables the Big Picture Mode Steam Deck UI.
+
+.SS Steam Browser Protocol
+
+.PP
+The special URL
+.I STEAM_URL
+can be added to extend the control.\&
+.I GAME_ID
+is the application's identifier.\&
+See below.
+
+.TP
+.B steam:\(dq\fISTEAM_ARG\fP\(dq
+
+Opens Steam with command line arguments
+.I STEAM_ARG\fR.\&
+If you forget the closing double quote for
+.I STEAM_ARG\fR,
+an assertion failed error will be raised by
+.I Steam.exe/BootStrapperApp.cpp\fR.
+
+.TP
+.B steam://AddNonSteamGame
+
+Opens the Steam checklist menu to add non-Steam games.\&
+If you would like to programmatically add or remove non-Steam games,
+see [4].
+
+.TP
+.B steam://advertise/\fIGAME_ID\fP
+
+Opens the store to the application's page.
+
+.TP
+.B steam://ackMessage/ackGuestPass/\fIGPASS
+
+Accepts the specified Gift or Guest Pass
+.I GPASS\fR.
+
+.TP
+.B steam://appnews/\fIGAME_ID\fP
+
+Opens up the news page for an app
+.I GAME_ID\fR.
+
+.TP
+.B steam://backup/\fIGAME_ID\fP
+
+Opens up the Backup Wizard and checks the specified application
+.I GAME_ID\fR.\&
+If an application is not specified then nothing will be checked.
+
+.TP
+.B steam://broadcast/watch/\fISTEAM_ID_64\fP
+
+.TP
+.B steam://browsemedia
+
+.TP
+.B steam://cdkeys/\fIAPP_ID\fP
+
+.TP
+.B steam://checksysreqs/\fIGAME_ID\fP
+
+Checks if users computer meets system requirements of app.
+
+.TP
+.B steam://connect/\fR(\fIIP_ADDRESS\fP\fR|\fP\fIDNS_NAME\fP\fR)[\fP\c
+.B :\fIPORT\fP\fR][\fP/\fIPASS\fP\fR]\fP
+
+Connects the user to the server specified by the IP or DNS name.\&
+You don't have to specify anything else to connect to a third party mod
+server, everything will be automatically detected.
+
+.TP
+.B steam://defrag/\fIGAME_ID\fP
+
+Defragments files of the application.
+
+.TP
+.B steam://ExitSteam
+
+Exits the Steam application.
+
+.TP
+.B steam://friends/add/\fIUSER_ID\fP
+
+Opens Friends and adds user with specified id number
+.I USER_ID\fR.
+
+.TP
+.B steam://friends/friends/\fILIST_ID\fP
+
+Opens Friends and shows list of users with whom you recently played.
+
+.TP
+.B steam://friends/joinchat/\fICHAT_ID\fP
+
+Opens Friends and joins a chat with a specified id number.
+
+.TP
+.B steam://friends/message/\fIUSER_ID\fP
+
+Opens Friends and send a message.
+
+.TP
+.B steam://friends/players
+
+Opens Friends and shows table of recent players you've played with.
+
+.TP
+.B steam://friends/settings/hideoffline
+
+Opens Friends and toggles offline friends from friends list.
+
+.TP
+.B steam://friends/settings/showavatars
+
+Opens Friends and toggles avatars in friends list.
+
+.TP
+.B steam://friends/settings/sortbyname
+
+Opens Friends and sorts friends list by name.
+
+.TP
+.B steam://friends/status/away
+
+Opens Friends and sets status as
+.B away\fR.
+
+.TP
+.B steam://friends/status/busy
+
+Opens Friends and sets status as
+.B busy\fR.
+
+.TP
+.B steam://friends/status/invisible
+
+Opens Friends and sets status as
+.B invisible\fR.
+
+.TP
+.B steam://friends/status/trade
+
+Opens Friends and sets status as
+.B trade\fR.
+
+.TP
+.B steam://friends/status/play
+
+Opens Friends and sets status as
+.B play\fR.
+
+.TP
+.B steam://friends/status/offline
+
+Opens Friends and sets status as
+.B offline\fR.
+
+.TP
+.B steam://friends/status/online
+
+Opens Friends and sets status as
+.B online\fR.
+
+.TP
+.B steam://flushconfig/
+
+Flushes and reloads the configs for each application: beta availability,
+etc.
+
+.TP
+.B steam://forceinputappid/\fR(\fP\fIGAME_ID\fP\fR|\fP\fISHORTCUT_NAME\fP\fR)\fP
+
+Forces the steam controller driver to use the layout for the given game
+.I GAME_ID\&
+or shortcut
+.I SHORTCUT_NAME\fR,\&
+without the need to use the in-game overlay, Big Picture mode, or even
+run the application at all.
+
+.TP
+.B steam://guestpasses/
+
+Opens up the Guest Passes window.
+
+.TP
+.B steam://hardwarepromo/\fR[\fP\fIHW_PROMO_ID\fP\fR]\fP
+
+Tests whether the user has hardware that matches a promotional offer
+.I HW_PROMO_ID\fR.
+
+.TP
+.B steam://install/\fIGAME_ID\fP
+
+Installs an application.
+
+.TP
+.B steam://installaddon/\fIADDON_ID\fP
+
+Installs the specified add-on.
+
+.TP
+.B steam://musicplayer/\fIMUSIC_CMD\fP
+
+Controls the music player.\&
+The values of the command
+.I MUSIC_CMD\&
+are :
+.B play\fR,
+.B pause\fR,
+.B toggleplaypause\fR,
+.B playprevious\fR,
+.B playnext\fR,
+.B togglemute\fR,
+.B increasevolume\fR,
+.B decreasevolume\fR,
+.B toggleplayingrepeatstatus\fR
+and
+.B toggleplayingshuffled\fR.
+
+.TP
+.B steam://nav/\fINAV_COMPONENT\fP
+
+Opens a Steam window, but doesn't make the Steam window active.\&
+Known
+.I NAV_COMPONENT\&
+values:
+.B console\fR,
+.B downloads\fR,
+.B games\fR[\fP/details\fR[\fP/(\fIGAME_ID\fP\fR|\fPgrid\fR|\fPlist\fR)]],
+.B library/collection/hidden\fR,
+.B media\fR,
+.B music\fR,
+.B tools\fR.
+
+.TP
+.B steam://open/\fIOPEN_COMPONENT\fP
+
+Opens a Steam window.\&
+Known
+.I OPEN_COMPONENT\&
+values:
+.B activateproduct\fR,
+.B bigpicture\fR,
+.B console\fR (Steam developer console),
+.B downloads\fR,
+.B friends\fR,
+.B games\fR[\fP/\fR(\fPdetails\fR|\fPgrid\fR|\fPlist\fR)],
+.B largegameslist\fR,
+.B minigameslist\fR,
+.B main\fR (your favorite window),
+.B music\fR,
+.B musicplayer\fR,
+.B mymedia\fR,
+.B news\fR,
+.B registerproduct\fR (CD key registration),
+.B screenshots/\fIGAME_ID\fR,
+.B servers\fR,
+.B settings\fR,
+.B tools\fR.
+
+.TP
+.B steam://openurl/\fIWEB_URL\fP
+
+Opens URL
+.I WEB_URL\&
+in the system's default WWW browser.
+
+.TP
+.B steam://openurl_external/\fIWEB_URL\fP
+
+.TP
+.B steam://paypal/cancel
+
+Cancels an ongoing PayPal transaction.
+
+.TP
+.B steam://preload/\fIGAME_ID\fP
+
+Preloads an application.
+
+.TP
+.B steam://publisher/\fIPUBLISHER\fP
+
+Loads the specified publisher catalogue in the Store.\&
+Type the publisher's name
+.I PUBLISHER\&
+in lowercase style like
+.B activision\&
+or
+.B valve\fR.
+
+.TP
+.B steam://purchase/\fIGAME_ID\fP
+
+Opens a dialog box to buy an application from Steam.
+
+.TP
+.B steam://purchase/subscription/\fISERVICE_ID\fP
+
+Opens up a dialog box to buy a subscription to a Steam product/service.\&
+None are available yet.
+
+.TP
+.B steam://removeaddon/\fIADDON_ID\fP
+
+Uninstalls the specified add-on
+.I ADDON_ID\fR.
+
+.TP
+.B steam://run/\fIGAME_ID\fP\fR[\fP//\fIGAME_ARGS\fP\fR]\fP/
+
+Runs an application
+.I GAME_ID\fR.\&
+It will be installed if necessary.\&
+The arguments string
+.I GAME_ARGS
+is optional.\&
+This arguments are passed to the application as launch parameters.
+
+.TP
+.B steam://runsafe/\fISOURCE_GAME_ID\fP
+
+Resets CVARs of a Source game.
+
+.TP
+.B steam://rungameid/\fIGAME_ID\fP
+
+Same as
+.B steam://run/\fR,\&
+but with support for mods and non-Steam shortcuts.
+
+.TP
+.B steam://settings/\fR[\fPSETTINGS_CMD\fR]\fP
+
+Same as
+.B steam://open/settings\fR,\&
+but also allows for subcommands
+.I SETTINGS_CMD\&
+for each page:
+.B account\fR,
+.B friends\fR,
+.B interface\fR,
+.B ingame\fR,
+.B downloads\fR,
+.B voice\fR.
+
+.TP
+.B steam://stopstreaming
+
+Stops a currently running in-home streaming session.
+
+.TP
+.B steam://store/\fR[\fPGAME_ID\fR]\fP
+
+Opens up the store for an app, if no app is specified then the default
+one is opened.
+
+.TP
+.B steam://subscriptioninstall\fR[\fP/\fIGAME_ID\fP\fR[\fP/\fIGAME_ID\fP …\fR]]\fP
+
+Opens a dialog box with a checklist of the games specified allowing you
+to install them all at once.
+
+.TP
+.B steam://support/\fISUPPORT_PARAMS\fP
+
+Launches the Steam Support utility, and runs all of its tests.\&
+Enter a valid support string
+.I SUPPORT_PARAMS
+to filter results.
+
+.TP
+.B steam://takesurvey/\fISURVEY_ID\fP
+
+Takes a survey.
+.I SURVEY_ID
+is an integer number.
+
+.TP
+.B steam://uninstall/\fIGAME_ID\fP
+
+Deletes the specified applications' cache files.
+
+.TP
+.B steam://UpdateFirmware
+
+Opens the Steam Controller firmware update screen.
+
+.TP
+.B steam://updatenews/\fIGAME_ID\fP
+
+Opens the news about the latest updates for an application.
+
+.TP
+.B steam://url/\fINAMED_WEB_PAGE\fP
+
+Opens a special, named web pages:
+
+
+.TP
+.B steam://validate/\fIGAME_ID\fP
+
+Validates the local files of an application.
+
+.SH FILES
+
+.TP
+.B \fIXDG_DATA_HOME\fP/Steam/
+
+Steam user default directory when
+.I XDG_DATA_HOME
+follows the FreeDesktop specification[5].
+
+.TP
+.B \fIXDG_DATA_HOME\fP/Steam/compatibilitytools.d/
+
+Non-Steam customized prefixes for Proton.\&
+The forks like Glorius Eggroll are stored in this directory.
+
+.TP
+.B \fIXDG_DATA_HOME\fP/Steam/steamapps/common/
+
+Installed games and other applications directory.
+
+.TP
+.B \fIXDG_DATA_HOME\fP/Steam/steamapps/compatdata/\fIGAME_ID\fP/
+
+Applications compatibility data directories.\&
+Each game
+.I GAME_ID
+running over Proton has its own directory.
+
+.TP
+.B \fIXDG_DATA_HOME\fP/Steam/steamapps/music/
+
+Musics directory.
+The default path scanned by the Steam music player.
+
+.SH EXAMPLES
+
+.TP
+.B "steam -login player 013passwd -tenfoot"
+
+Launches Steam in Big Picture mode by automatic logging.\&
+Be carefull : the password is not hashed !
+
+.TP
+.B "steam steam://rungameid/70"
+
+Launches directly the game Half-Life 1.
+
+.TP
+.B "steam steam://connect/192.0.2.1:27015"
+
+Launches and connects to the specified by the IP address 192.0.2.1 and
+the port 27015.
+
+.SH AUTHOR
+
+.PP
+The steam launcher script is written and maintained by
+.UR "https://www.valvesofware.com"
+Valve Corporation
+.UE
+
+.SH SEE ALSO
+
+.TP
+.B 1.
+.UR "https://developer.valvesoftware.com/wiki/Steam_browser_protocol"
+Steam Browser Protocol
+.UE
+
+.TP
+.B 2.
+.UR "https://developer.valvesoftware.com/wiki/Command_Line_Options"
+Steam Launcher Options
+.UE
+
+.TP
+.B 3.
+.UR "https://steamdb.info/"
+Steam IDs Database
+.UE
+.RS
+.RS
+Not affiliated to Valve or Steam.
+.RE
+.RE
+
+.TP
+.B 4.
+.UR "https://developer.valvesoftware.com/wiki/Add_Non-Steam_Game"
+Add non-Steam game
+.UE
+
+.TP
+.B 5.
+.UR "http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html"
+XDG Base Directory Specification
+.UE
